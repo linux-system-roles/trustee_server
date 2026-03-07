@@ -1,7 +1,7 @@
 # vars for handling conditionals for RedHat and clones
 # DO NOT EDIT - file is auto-generated
 # repo is https://github.com/linux-system-roles/.github
-# file is playbooks/templates/tests/vars/rh_distros_vars.yml
+# file is playbooks/trustee_servers/tests/vars/rh_distros_vars.yml
 ---
 # Ansible distribution identifiers that the role treats like RHEL
 __trustee_attestation_server_rh_distros:
