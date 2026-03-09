@@ -70,10 +70,14 @@
 - name: Generate certificates for all components
   ansible.builtin.shell: |
     # Trustee Server SSL
-    if [ ! -f {{ trustee_attestation_server_config_dir }}/kbs/server.crt ] || [ ! -f {{ trustee_attestation_server_config_dir }}/kbs/server.key ]; then
-      openssl req -new -x509 -nodes -sha256 -days 3550 \
+    if [ ! -f {{ trustee_attestation_server_config_dir }}/kbs/server.key ] || [ ! -f {{ trustee_attestation_server_config_dir }}/kbs/server.crt ]; then
+      openssl req -x509 -newkey rsa:2048 -nodes -keyout {{ trustee_attestation_server_config_dir }}/kbs/server.key \
         -subj "/CN=$(hostname -f)/O=Red Hat" \
-        -out {{ trustee_attestation_server_config_dir }}/kbs/server.crt -keyout {{ trustee_attestation_server_config_dir }}/kbs/server.key
+        -addext "basicConstraints=CA:FALSE" \
+        -addext "keyUsage=digitalSignature,keyEncipherment" \
+        -addext "extendedKeyUsage=serverAuth" \
+        -addext "subjectAltName=DNS:$(hostname -f)" \
+        -out {{ trustee_attestation_server_config_dir }}/kbs/server.crt
     fi
     # KBS authentication key pair
     if [ ! -f {{ trustee_attestation_server_config_dir }}/kbs/auth.key ] || [ ! -f {{ trustee_attestation_server_config_dir }}/kbs/auth.pub ]; then
@@ -89,6 +93,7 @@
       mkdir -p {{ trustee_attestation_server_config_dir }}/kbs/trusted_certs
       cp {{ trustee_attestation_server_config_dir }}/as/token.crt {{ trustee_attestation_server_config_dir }}/kbs/trusted_certs/token0.crt
     fi
+  changed_when: true
 
 - name: Gather service facts
   ansible.builtin.service_facts:
@@ -99,22 +104,21 @@
     permanent: true
     immediate: true
     state: enabled
-  when: ansible_facts.services['firewalld.service'].state == 'running'
+  when: (ansible_facts.services | default({})).get('firewalld.service', {}).get('state', '') == 'running'
 
 - name: Get the installed Trustee Server pod name
   ansible.builtin.find:
     paths: "{{ trustee_server_quadlet_install_dir }}"
     patterns: "*.pod"
-  register: trustee_server_pod_name
+  register: __trustee_attestation_server_pod_name
 
-- name: Enable and start Trustee Server services
-  ansible.builtin.systemd:
-    name: "{{ trustee_server_pod_name.files[0].path | basename | regex_replace('\\.pod$', '') }}-pod.service"
-    enabled: true
-    state: restarted
-    daemon_reload: true
-  when: trustee_server_pod_name.files | length > 0
-  failed_when: false
+- name: Append Trustee Server services to the list of services to restart
+  set_fact:
+    __trustee_attestation_server_services: >-
+      {{ __trustee_attestation_server_services | default([]) + [__trustee_attestation_server_pod_name.files[0].path | basename | replace('.pod', '-pod')] }}
+  when: __trustee_attestation_server_pod_name.files | length > 0
+  changed_when: true
+  notify: Handler for trustee_attestation_server to restart services
 
 # TODO keep the server.crt and DNS names in the role variables
 
