@@ -47,11 +47,7 @@ You can run tests locally with the `tmt try` cli or remotely in Testing Farm.
     $ TESTING_FARM_API_TOKEN=<your_api_token> \
         testing-farm request --pipeline-type="tmt-multihost" \
         --plan-filter="tag:playbooks_parallel" \
-<<<<<<< HEAD
         --git-url "https://github.com/<my_user>/trustee_attestation_server" \
-=======
-        --git-url "https://github.com/<my_user>/trustee_server" \
->>>>>>> 4efcd62 (feat(trustee_quadlet): add Trustee quadlet deployment)
         --git-ref "<my_branch>" \
         --compose CentOS-Stream-9 \
         -e "SYSTEM_ROLES_ONLY_TESTS=tests_default.yml" \
