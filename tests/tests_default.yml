@@ -2,12 +2,76 @@
 ---
 - name: Ensure that the role runs with default parameters
   hosts: all
-  gather_facts: false  # test that role works in this case
-  roles:
-    - linux-system-roles.trustee_server
+  gather_facts: true
   tasks:
-    - name: Check header for ansible_managed, fingerprint
-      include_tasks: tasks/check_header.yml
-      vars:
-        __file: /etc/foo.conf
-        __fingerprint: system_role:trustee_server
+    - name: Include trustee_attestation_server role
+      ansible.builtin.include_role:
+        name: linux-system-roles.trustee_attestation_server
+        public: true
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+
+    - name: Assert required packages are installed
+      ansible.builtin.assert:
+        that: item in ansible_facts.packages
+        fail_msg: "Required package {{ item }} is not installed"
+      loop: "{{ __trustee_attestation_server_trustee_packages }}"
+
+    - name: Check trustee quadlet install directory exists
+      ansible.builtin.stat:
+        path: "{{ trustee_attestation_server_quadlet_install_dir }}"
+      register: quadlet_dir
+
+    - name: Assert quadlet directory exists
+      ansible.builtin.assert:
+        that: quadlet_dir.stat.exists
+        fail_msg: "Quadlet install directory {{ trustee_attestation_server_quadlet_install_dir }} was not created"
+
+    - name: Find quadlet files in install directory
+      ansible.builtin.find:
+        paths: "{{ trustee_attestation_server_quadlet_install_dir }}"
+        patterns:
+          - "*.container"
+          - "*.volume"
+          - "*.network"
+          - "*.pod"
+        recurse: false
+      register: quadlet_files
+
+    - name: Assert quadlet files exist
+      ansible.builtin.assert:
+        that: quadlet_files.matched | int > 0
+        fail_msg: "No quadlet files found in {{ trustee_attestation_server_quadlet_install_dir }}"
+
+    - name: Check trustee certificates and keys were generated
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: trustee_certs
+      loop:
+        - "{{ __trustee_attestation_server_config_dir }}/kbs/server.key"
+        - "{{ __trustee_attestation_server_config_dir }}/kbs/server.crt"
+        - "{{ __trustee_attestation_server_config_dir }}/kbs/auth.key"
+        - "{{ __trustee_attestation_server_config_dir }}/kbs/auth.pub"
+        - "{{ __trustee_attestation_server_config_dir }}/as/token.key"
+        - "{{ __trustee_attestation_server_config_dir }}/as/token.crt"
+        - "{{ __trustee_attestation_server_config_dir }}/kbs/trusted_certs/token0.crt"
+
+    - name: Assert trustee certificates and keys exist
+      ansible.builtin.assert:
+        that: item.stat.exists
+        fail_msg: "Trustee cert/key {{ item.item }} was not generated"
+      loop: "{{ trustee_certs.results }}"
+
+    - name: Find trustee pod file
+      ansible.builtin.find:
+        paths: "{{ trustee_attestation_server_quadlet_install_dir }}"
+        patterns: "*.pod"
+        recurse: false
+      register: trustee_pod_files
+
+    - name: Check trustee pod service is running
+      ansible.builtin.service:
+        name: "{{ (trustee_pod_files.files[0].path | basename) | replace('.pod', '') }}-pod"
+        state: started
+      check_mode: true
