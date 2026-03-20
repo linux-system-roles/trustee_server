@@ -1,11 +1,10 @@
-# Role Name
+# trustee_attestation_server
 
 [![ansible-lint.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/ansible-lint.yml) [![ansible-test.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/ansible-test.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/ansible-test.yml) [![codespell.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/codespell.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/codespell.yml) [![markdownlint.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/markdownlint.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/markdownlint.yml) [![qemu-kvm-integration-tests.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/qemu-kvm-integration-tests.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/qemu-kvm-integration-tests.yml) [![shellcheck.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/shellcheck.yml) [![tft.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/tft.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/tft.yml) [![tft_citest_bad.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/tft_citest_bad.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/tft_citest_bad.yml) [![woke.yml](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/woke.yml/badge.svg)](https://github.com/linux-system-roles/trustee_attestation_server/actions/workflows/woke.yml)
 
-![template](https://github.com/linux-system-roles/template/workflows/tox/badge.svg)
+![trustee_attestation_server](https://github.com/linux-system-roles/trustee_attestation_server/workflows/tox/badge.svg)
 
-A template for an ansible role that configures some GNU/Linux subsystem or
-service. A brief description of the role goes here.
+An Ansible role that manages trustee attestation servers.
 
 ## Requirements
 

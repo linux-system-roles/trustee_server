@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Example template role invocation
+- name: Example trustee_attestation_server role invocation
   hosts: all
   vars:
-    template_foo: example variable value
-    template_bar: false
+    trustee_attestation_server_foo: example variable value
+    trustee_attestation_server_bar: false
   roles:
-    - linux-system-roles.template
+    - linux-system-roles.trustee_attestation_server
