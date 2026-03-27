@@ -20,17 +20,17 @@
 
     - name: Check trustee quadlet install directory exists
       ansible.builtin.stat:
-        path: "{{ trustee_attestation_server_quadlet_install_dir }}"
+        path: "{{ __trustee_attestation_server_quadlet_install_dir }}"
       register: quadlet_dir
 
     - name: Assert quadlet directory exists
       ansible.builtin.assert:
         that: quadlet_dir.stat.exists
-        fail_msg: "Quadlet install directory {{ trustee_attestation_server_quadlet_install_dir }} was not created"
+        fail_msg: "Quadlet install directory {{ __trustee_attestation_server_quadlet_install_dir }} was not created"
 
     - name: Find quadlet files in install directory
       ansible.builtin.find:
-        paths: "{{ trustee_attestation_server_quadlet_install_dir }}"
+        paths: "{{ __trustee_attestation_server_quadlet_install_dir }}"
         patterns:
           - "*.container"
           - "*.volume"
@@ -42,7 +42,7 @@
     - name: Assert quadlet files exist
       ansible.builtin.assert:
         that: quadlet_files.matched | int > 0
-        fail_msg: "No quadlet files found in {{ trustee_attestation_server_quadlet_install_dir }}"
+        fail_msg: "No quadlet files found in {{ __trustee_attestation_server_quadlet_install_dir }}"
 
     - name: Check trustee certificates and keys were generated
       ansible.builtin.stat:
@@ -65,7 +65,7 @@
 
     - name: Find trustee pod file
       ansible.builtin.find:
-        paths: "{{ trustee_attestation_server_quadlet_install_dir }}"
+        paths: "{{ __trustee_attestation_server_quadlet_install_dir }}"
         patterns: "*.pod"
         recurse: false
       register: trustee_pod_files

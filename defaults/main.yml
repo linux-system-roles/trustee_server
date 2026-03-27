@@ -3,13 +3,7 @@
 # Here is the right place to put the role's input variables.
 # This file also serves as a documentation for such a variables.
 
-# Trustee Server Components Quadlet repository configuration
 trustee_attestation_server_trustee: true
-trustee_attestation_server_quadlet_repo_url: "https://github.com/litian1992/trustee-quadlet-rhel.git"
-trustee_attestation_server_quadlet_repo_path: "quadlet"
-trustee_attestation_server_quadlet_repo_branch: "main"
-trustee_attestation_server_quadlet_install_dir: "/etc/containers/systemd"
-trustee_attestation_server_config_dir: "/etc/trustee"
 # Secret registration server service configuration
 trustee_attestation_server_secret_registration_enabled: false
 trustee_attestation_server_secret_registration_listen_port: 8081

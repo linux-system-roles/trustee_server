@@ -12,6 +12,10 @@ __trustee_attestation_server_trustee_packages:
 __trustee_attestation_server_services: []
 __trustee_attestation_server_secret_registration_packages:
   - python3
+__trustee_attestation_server_quadlet_repo_url: "https://github.com/litian1992/trustee-quadlet-rhel.git"
+__trustee_attestation_server_quadlet_repo_path: "quadlet"
+__trustee_attestation_server_quadlet_repo_branch: "main"
+__trustee_attestation_server_quadlet_install_dir: "/etc/containers/systemd"
 __trustee_attestation_server_config_dir: "/etc/trustee"
 # ansible_facts required by the role
 __trustee_attestation_server_required_facts:
