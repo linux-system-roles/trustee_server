@@ -9,7 +9,7 @@
 
 - name: Ensure quadlet install directory exists
   ansible.builtin.file:
-    path: "{{ trustee_attestation_server_quadlet_install_dir }}"
+    path: "{{ __trustee_attestation_server_quadlet_install_dir }}"
     state: directory
     mode: "0755"
 
@@ -20,16 +20,16 @@
 
 - name: Download Trustee Server quadlet files from GitHub repository
   ansible.builtin.git:
-    repo: "{{ trustee_attestation_server_quadlet_repo_url }}"
+    repo: "{{ __trustee_attestation_server_quadlet_repo_url }}"
     dest: "{{ __trustee_attestation_server_quadlet_repo_dir.path }}"
-    version: "{{ trustee_attestation_server_quadlet_repo_branch }}"
+    version: "{{ __trustee_attestation_server_quadlet_repo_branch }}"
     depth: 1
     force: true
   register: quadlet_repo_download
 
 - name: Find Trustee Server quadlet files in repository
   ansible.builtin.find:
-    paths: "{{ __trustee_attestation_server_quadlet_repo_dir.path }}/{{ trustee_attestation_server_quadlet_repo_path }}"
+    paths: "{{ __trustee_attestation_server_quadlet_repo_dir.path }}/{{ __trustee_attestation_server_quadlet_repo_path }}"
     patterns:
       - "*.container"
       - "*.volume"
@@ -40,13 +40,13 @@
 
 - name: Fail if no Trustee Server quadlet files found
   ansible.builtin.fail:
-    msg: "No quadlet files found in {{ trustee_attestation_server_quadlet_repo_url }}/{{ trustee_attestation_server_quadlet_repo_path }}"
+    msg: "No quadlet files found in {{ __trustee_attestation_server_quadlet_repo_url }}/{{ __trustee_attestation_server_quadlet_repo_path }}"
   when: quadlet_files_found.files | length == 0
 
 - name: Copy Trustee Server quadlet files to install directory
   ansible.builtin.copy:
     src: "{{ item.path }}"
-    dest: "{{ trustee_attestation_server_quadlet_install_dir }}/{{ item.path | basename }}"
+    dest: "{{ __trustee_attestation_server_quadlet_install_dir }}/{{ item.path | basename }}"
     mode: "0644"
     remote_src: true
     force: true
@@ -109,7 +109,7 @@
 
 - name: Get the installed Trustee Server pod name
   ansible.builtin.find:
-    paths: "{{ trustee_attestation_server_quadlet_install_dir }}"
+    paths: "{{ __trustee_attestation_server_quadlet_install_dir }}"
     patterns: "*.pod"
   register: __trustee_attestation_server_pod_name
 

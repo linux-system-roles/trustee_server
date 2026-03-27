@@ -29,10 +29,6 @@ ansible-galaxy collection install -r meta/collection-requirements.yml
   hosts: all
   vars:
     trustee_attestation_server_trustee: true
-    trustee_attestation_server_quadlet_repo_url: "https://github.com/litian1992/trustee-quadlet-rhel.git"
-    trustee_attestation_server_quadlet_repo_path: "quadlet"
-    trustee_attestation_server_quadlet_repo_branch: "main"
-    trustee_attestation_server_quadlet_install_dir: "/etc/containers/systemd"
     trustee_attestation_server_secret_registration_enabled: true
     trustee_attestation_server_secret_registration_listen_port: 8081
   roles:
