@@ -4,9 +4,9 @@
   hosts: all
   tasks:
     - name: Include trustee_server role
-      ansible.builtin.include_role:
-        name: linux-system-roles.trustee_server
-        public: true
+      ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+      vars:
+        __sr_public: true
 
     - name: Gather package facts
       ansible.builtin.package_facts:
