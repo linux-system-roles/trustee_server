@@ -3,7 +3,6 @@
 - name: Set platform/version specific variables
   include_tasks: tasks/set_vars.yml
 
-# Examples of some tasks:
 - name: Deploy Trustee Server Components using Podman Quadlets
   include_tasks: trustee_quadlet.yml
   when: trustee_server_trustee | bool
