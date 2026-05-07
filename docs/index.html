@@ -141,17 +141,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="#control-node" id="toc-control-node">Control node</a></li>
 </ul></li>
+<li><a href="#variables" id="toc-variables">Variables</a>
+<ul>
+<li><a href="#trustee_server_trustee"
+id="toc-trustee_server_trustee">trustee_server_trustee</a></li>
+<li><a href="#trustee_server_secret_registration_enabled"
+id="toc-trustee_server_secret_registration_enabled">trustee_server_secret_registration_enabled</a></li>
+<li><a href="#trustee_server_secret_registration_listen_port"
+id="toc-trustee_server_secret_registration_listen_port">trustee_server_secret_registration_listen_port</a></li>
+<li><a href="#trustee_server_secure_logging"
+id="toc-trustee_server_secure_logging">trustee_server_secure_logging</a></li>
+</ul></li>
 <li><a href="#example-playbook" id="toc-example-playbook">Example
 Playbook</a></li>
 <li><a href="#trustee-server" id="toc-trustee-server">Trustee
 Server</a></li>
 <li><a href="#secret-registration-server"
 id="toc-secret-registration-server">Secret Registration Server</a></li>
-<li><a href="#variables" id="toc-variables">Variables</a>
-<ul>
-<li><a href="#trustee_server_secure_logging"
-id="toc-trustee_server_secure_logging">trustee_server_secure_logging</a></li>
-</ul></li>
 <li><a href="#license" id="toc-license">License</a></li>
 <li><a href="#author" id="toc-author">Author</a></li>
 </ul>
@@ -183,6 +189,48 @@ creates disk encryption keys, and stores them in Trustee KBS</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ansible-galaxy</span> collection install <span class="at">-r</span> meta/collection-requirements.yml</span></code></pre></div>
+<h1 id="variables">Variables</h1>
+<h2 id="trustee_server_trustee">trustee_server_trustee</h2>
+<p>Whether to deploy the Trustee server components (KBS, AS, RVPS) using
+Podman Quadlets.</p>
+<p>The secret registration server is only deployed when this is
+<code>true</code> and <a
+href="#trustee_server_secret_registration_enabled"><code>trustee_server_secret_registration_enabled</code></a>
+is <code>true</code>.</p>
+<p>Default: <code>true</code></p>
+<p>Type: <code>bool</code></p>
+<h2
+id="trustee_server_secret_registration_enabled">trustee_server_secret_registration_enabled</h2>
+<p>Whether to deploy the secret registration HTTPS service that receives
+attestation-backed registration requests, verifies attestation, creates
+disk encryption keys, and stores them in Trustee KBS.</p>
+<p>This has no effect unless <a
+href="#trustee_server_trustee"><code>trustee_server_trustee</code></a>
+is <code>true</code>, because the registration server depends on
+Trustee.</p>
+<p>Default: <code>false</code></p>
+<p>Type: <code>bool</code></p>
+<h2
+id="trustee_server_secret_registration_listen_port">trustee_server_secret_registration_listen_port</h2>
+<p>TCP port on which the secret registration server listens. The role
+opens this port in firewalld when <code>firewalld</code> is running.</p>
+<p>Default: <code>8081</code></p>
+<p>Type: <code>int</code></p>
+<h2
+id="trustee_server_secure_logging">trustee_server_secure_logging</h2>
+<p>If <code>true</code>, suppress potentially sensitive output from
+tasks that handle credentials, secrets, and other sensitive data by
+setting <code>no_log: true</code> on those tasks. This prevents
+passwords, API tokens, private keys, and similar sensitive information
+from appearing in Ansible logs and console output.</p>
+<p>If you need to debug issues with credential handling or secret
+management, you can temporarily set
+<code>trustee_server_secure_logging: false</code> to see the full output
+from these tasks. However, be aware that this may expose sensitive
+information in logs, so it should only be used in development or
+troubleshooting scenarios.</p>
+<p>Default: <code>true</code></p>
+<p>Type: <code>bool</code></p>
 <h1 id="example-playbook">Example Playbook</h1>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Deploy Trustee Server</span></span>
@@ -219,21 +267,6 @@ network security allowance depending on your environment.</p>
 </ol>
 <p>Clients can then fetch the key from Trustee CDH using
 attestation.</p>
-<h1 id="variables">Variables</h1>
-<h2
-id="trustee_server_secure_logging">trustee_server_secure_logging</h2>
-<p>If <code>true</code>, suppress potentially sensitive output from
-tasks that handle credentials, secrets, and other sensitive data by
-setting <code>no_log: true</code> on those tasks. This prevents
-passwords, API tokens, private keys, and similar sensitive information
-from appearing in Ansible logs and console output.</p>
-<p>If you need to debug issues with credential handling or secret
-management, you can temporarily set
-<code>trustee_server_secure_logging: false</code> to see the full output
-from these tasks. However, be aware that this may expose sensitive
-information in logs, so it should only be used in development or
-troubleshooting scenarios.</p>
-<p>Default: <code>true</code></p>
 <h1 id="license">License</h1>
 <p>MIT</p>
 <h1 id="author">Author</h1>
