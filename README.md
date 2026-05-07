@@ -22,6 +22,59 @@ An Ansible role that deploys [Trustee](https://confidentialcontainers.org/docs/a
 ansible-galaxy collection install -r meta/collection-requirements.yml
 ```
 
+## Variables
+
+### trustee_server_trustee
+
+Whether to deploy the Trustee server components (KBS, AS, RVPS) using Podman
+Quadlets.
+
+The secret registration server is only deployed when this is `true` and
+[`trustee_server_secret_registration_enabled`](#trustee_server_secret_registration_enabled)
+is `true`.
+
+Default: `true`
+
+Type: `bool`
+
+### trustee_server_secret_registration_enabled
+
+Whether to deploy the secret registration HTTPS service that receives
+attestation-backed registration requests, verifies attestation, creates disk
+encryption keys, and stores them in Trustee KBS.
+
+This has no effect unless [`trustee_server_trustee`](#trustee_server_trustee)
+is `true`, because the registration server depends on Trustee.
+
+Default: `false`
+
+Type: `bool`
+
+### trustee_server_secret_registration_listen_port
+
+TCP port on which the secret registration server listens. The role opens this
+port in firewalld when `firewalld` is running.
+
+Default: `8081`
+
+Type: `int`
+
+### trustee_server_secure_logging
+
+If `true`, suppress potentially sensitive output from tasks that handle
+credentials, secrets, and other sensitive data by setting `no_log: true` on
+those tasks. This prevents passwords, API tokens, private keys, and similar
+sensitive information from appearing in Ansible logs and console output.
+
+If you need to debug issues with credential handling or secret management, you
+can temporarily set `trustee_server_secure_logging: false` to see the full output from
+these tasks. However, be aware that this may expose sensitive information in
+logs, so it should only be used in development or troubleshooting scenarios.
+
+Default: `true`
+
+Type: `bool`
+
 ## Example Playbook
 
 ```yaml
@@ -58,22 +111,6 @@ When enabled, the secret registration server:
 4. Appends resource policy to `/etc/trustee/kbs/policy.rego`
 
 Clients can then fetch the key from Trustee CDH using attestation.
-
-## Variables
-
-### trustee_server_secure_logging
-
-If `true`, suppress potentially sensitive output from tasks that handle
-credentials, secrets, and other sensitive data by setting `no_log: true` on
-those tasks. This prevents passwords, API tokens, private keys, and similar
-sensitive information from appearing in Ansible logs and console output.
-
-If you need to debug issues with credential handling or secret management, you
-can temporarily set `trustee_server_secure_logging: false` to see the full output from
-these tasks. However, be aware that this may expose sensitive information in
-logs, so it should only be used in development or troubleshooting scenarios.
-
-Default: `true`
 
 ## License
 
