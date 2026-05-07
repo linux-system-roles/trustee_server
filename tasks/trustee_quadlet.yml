@@ -60,10 +60,11 @@
       cp {{ __trustee_server_config_dir }}/as/token.crt {{ __trustee_server_config_dir }}/kbs/trusted_certs/token0.crt
     fi
   changed_when: true
-  no_log: true
+  no_log: "{{ trustee_server_secure_logging }}"
 
 - name: Gather service facts
   ansible.builtin.service_facts:
+  no_log: "{{ ansible_verbosity < 2 }}"
 
 - name: Allow port 8080 in firewall
   ansible.posix.firewalld:
