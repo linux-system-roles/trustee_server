@@ -213,7 +213,7 @@ Trustee.</p>
 <h2
 id="trustee_server_secret_registration_listen_port">trustee_server_secret_registration_listen_port</h2>
 <p>TCP port on which the secret registration server listens. The role
-opens this port in firewalld when <code>firewalld</code> is running.</p>
+opens this port in firewalld.</p>
 <p>Default: <code>8081</code></p>
 <p>Type: <code>int</code></p>
 <h2
@@ -246,7 +246,7 @@ href="examples"><code>examples/</code></a> directory.</p>
 <h1 id="trustee-server">Trustee Server</h1>
 <p>When enabled, the role:</p>
 <ol type="1">
-<li>Downloads the Podman Quadlets from designated repo</li>
+<li>Installs the Podman Quadlets provided by the role</li>
 <li>Generates all required certificates of Trustee server
 components</li>
 <li>Add KBS port 8080 to firewalld</li>
