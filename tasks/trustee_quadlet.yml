@@ -62,17 +62,15 @@
   changed_when: true
   no_log: "{{ trustee_server_secure_logging }}"
 
-- name: Gather service facts
-  ansible.builtin.service_facts:
-  no_log: "{{ ansible_verbosity < 3 }}"
-
 - name: Allow port 8080 in firewall
-  ansible.posix.firewalld:
-    port: "8080/tcp"
-    permanent: true
-    immediate: true
-    state: enabled
-  when: (ansible_facts.services | default({})).get('firewalld.service', {}).get('state', '') == 'running'
+  ansible.builtin.include_role:
+    name: fedora.linux_system_roles.firewall
+  vars:
+    firewall:
+      - port: "8080/tcp"
+        permanent: true
+        runtime: true
+        state: enabled
 
 - name: Get the installed Trustee Server pod name
   ansible.builtin.find:

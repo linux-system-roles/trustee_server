@@ -53,7 +53,7 @@ Type: `bool`
 ### trustee_server_secret_registration_listen_port
 
 TCP port on which the secret registration server listens. The role opens this
-port in firewalld when `firewalld` is running.
+port in firewalld.
 
 Default: `8081`
 
@@ -94,7 +94,7 @@ More examples are in the [`examples/`](examples) directory.
 
 When enabled, the role:
 
-1. Downloads the Podman Quadlets from designated repo
+1. Installs the Podman Quadlets provided by the role
 2. Generates all required certificates of Trustee server components
 3. Add KBS port 8080 to firewalld
 4. Enables the services by default
