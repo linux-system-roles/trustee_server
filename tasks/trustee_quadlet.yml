@@ -64,7 +64,7 @@
 
 - name: Gather service facts
   ansible.builtin.service_facts:
-  no_log: "{{ ansible_verbosity < 2 }}"
+  no_log: "{{ ansible_verbosity < 3 }}"
 
 - name: Allow port 8080 in firewall
   ansible.posix.firewalld:
