@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[1.0.1] - 2026-05-12
+--------------------
+
+### Bug Fixes
+
+- fix: Use verbosity level 3 for no_log (#18)
+
+### Other Changes
+
+- refactor: use firewall role instead of module (#19)
+
 [1.0.0] - 2026-05-07
 --------------------
 
