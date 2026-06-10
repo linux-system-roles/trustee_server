@@ -78,3 +78,9 @@
     daemon_reload: true
   tags:
     - tests::cleanup
+
+- name: Ensure volumes are removed
+  ansible.builtin.command: podman volume rm -a -f
+  changed_when: true
+  tags:
+    - tests::cleanup
