@@ -38,7 +38,7 @@
     # Trustee Server SSL
     if [ ! -f {{ __trustee_server_config_dir }}/kbs/server.key ] || [ ! -f {{ __trustee_server_config_dir }}/kbs/server.crt ]; then
       openssl req -x509 -newkey rsa:2048 -nodes -keyout {{ __trustee_server_config_dir }}/kbs/server.key \
-        -subj "/CN=$(hostname -f)/O=Red Hat" \
+        -subj "/O=Red Hat" \
         -addext "basicConstraints=CA:FALSE" \
         -addext "keyUsage=digitalSignature,keyEncipherment" \
         -addext "extendedKeyUsage=serverAuth" \
