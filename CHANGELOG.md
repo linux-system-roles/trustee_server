@@ -1,6 +1,20 @@
 Changelog
 =========
 
+[1.0.2] - 2026-06-24
+--------------------
+
+### Bug Fixes
+
+- fix: do not use cert '-subj' with hostname to generate cert, use subjectAltName (#24)
+
+### Other Changes
+
+- refactor: use ansible.posix 2.1.X for EL7 compatibility [citest_skip] (#21)
+- ci: Add config file for CodeRabbit with custom rules (#22)
+- ci: Skip reviews for PRs with [citest_skip] in the title (#23)
+- test: ensure podman volumes are removed (#25)
+
 [1.0.1] - 2026-05-12
 --------------------
 
