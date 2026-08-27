@@ -53,7 +53,7 @@ Type: `bool`
 ### trustee_server_secret_registration_listen_port
 
 TCP port on which the secret registration server listens. The role opens this
-port in firewalld.
+port in firewalld. Must be between `1` and `65535` inclusive.
 
 Default: `8081`
 
