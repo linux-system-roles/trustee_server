@@ -16,30 +16,33 @@ argument_specs:
     options:
       trustee_server_trustee:
         type: bool
+        default: true
         description: >
           Whether to deploy the Trustee server components (KBS, AS,
           RVPS) using Podman Quadlets. The secret registration server
           is only deployed when this is `true` and
           `trustee_server_secret_registration_enabled` is also `true`.
-          Defaults to `true`.
       trustee_server_secret_registration_enabled:
         type: bool
+        default: false
         description: >
           Whether to deploy the secret registration HTTPS service
           that receives attestation-backed registration requests,
           verifies attestation, creates disk encryption keys, and
           stores them in Trustee KBS. Has no effect unless
-          `trustee_server_trustee` is `true`. Defaults to `false`.
+          `trustee_server_trustee` is `true`.
       trustee_server_secret_registration_listen_port:
         type: int
+        default: 8081
         description: >
           TCP port on which the secret registration server listens.
           The role opens this port in firewalld. Must be between
-          `1` and `65535` inclusive. Defaults to `8081`.
+          `1` and `65535` inclusive.
       trustee_server_secure_logging:
         type: bool
+        default: true
         description: >
           Whether to suppress potentially sensitive output from tasks
           that handle credentials and secrets by setting `no_log` on
           those tasks. Only intended to be disabled when debugging
-          credential or secret handling issues. Defaults to `true`.
+          credential or secret handling issues.
