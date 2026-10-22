@@ -5,6 +5,13 @@
 # that outcome.
 - name: Verify invalid parameters are rejected
   hosts: all
+  vars:
+    __invalid_input_failure_messages: >-
+      {{ ([ansible_failed_result.msg | default('') | string,
+           ansible_failed_result.msg.msg | default('') | string]
+          + (ansible_failed_result.results | default([])
+             | map(attribute='msg') | map('default', '') | list))
+         | join(' ') }}
   tasks:
     - name: Run invalid input tests
       block:
@@ -27,6 +34,10 @@
                 - name: Mark invalid trustee_server_trustee type rejected
                   ansible.builtin.set_fact:
                     __invalid_input_trustee_type_failed: true
+                  when: >-
+                    "argument 'trustee_server_trustee'" in
+                    __invalid_input_failure_messages and
+                    'convert to bool' in __invalid_input_failure_messages
 
             - name: Assert invalid trustee_server_trustee type was rejected
               ansible.builtin.assert:
@@ -48,6 +59,10 @@
                 - name: Mark invalid secret_registration_enabled type rejected
                   ansible.builtin.set_fact:
                     __invalid_input_secret_reg_enabled_type_failed: true
+                  when: >-
+                    "argument 'trustee_server_secret_registration_enabled'"
+                    in __invalid_input_failure_messages and
+                    'convert to bool' in __invalid_input_failure_messages
 
             - name: Assert invalid secret_registration_enabled type was rejected
               ansible.builtin.assert:
@@ -72,6 +87,10 @@
                 - name: Mark invalid listen_port type rejected
                   ansible.builtin.set_fact:
                     __invalid_input_listen_port_type_failed: true
+                  when: >-
+                    "argument 'trustee_server_secret_registration_listen_port'"
+                    in __invalid_input_failure_messages and
+                    'convert to int' in __invalid_input_failure_messages
 
             - name: Assert invalid listen_port type was rejected
               ansible.builtin.assert:
@@ -96,6 +115,10 @@
                 - name: Mark invalid secure_logging type rejected
                   ansible.builtin.set_fact:
                     __invalid_input_secure_logging_type_failed: true
+                  when: >-
+                    "argument 'trustee_server_secure_logging'" in
+                    __invalid_input_failure_messages and
+                    'convert to bool' in __invalid_input_failure_messages
 
             - name: Assert invalid secure_logging type was rejected
               ansible.builtin.assert:
@@ -124,6 +147,10 @@
             - name: Mark listen_port above range rejected
               ansible.builtin.set_fact:
                 __invalid_input_listen_port_high_failed: true
+              when: >-
+                'trustee_server_secret_registration_listen_port must be between'
+                in __invalid_input_failure_messages and
+                'got 70000 (int)' in __invalid_input_failure_messages
 
         - name: Assert listen_port above 65535 was rejected
           ansible.builtin.assert:
@@ -148,6 +175,10 @@
             - name: Mark listen_port below range rejected
               ansible.builtin.set_fact:
                 __invalid_input_listen_port_low_failed: true
+              when: >-
+                'trustee_server_secret_registration_listen_port must be between'
+                in __invalid_input_failure_messages and
+                'got 0 (int)' in __invalid_input_failure_messages
 
         - name: Assert listen_port below 1 was rejected
           ansible.builtin.assert:
