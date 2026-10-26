@@ -8,3 +8,6 @@ trustee_server_trustee: true
 trustee_server_secret_registration_enabled: false
 trustee_server_secret_registration_listen_port: 8081
 trustee_server_secure_logging: true
+
+# Transactional update reboot: true reboots, false only notifies, null fails
+trustee_server_transactional_update_reboot_ok: null

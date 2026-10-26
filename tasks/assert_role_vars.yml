@@ -10,3 +10,14 @@
       1 and 65535 inclusive,
       got {{ trustee_server_secret_registration_listen_port }}
       ({{ trustee_server_secret_registration_listen_port | type_debug }})
+
+- name: Assert trustee_server_transactional_update_reboot_ok is null or a boolean
+  ansible.builtin.assert:
+    that:
+      - >-
+        (trustee_server_transactional_update_reboot_ok is none)
+        or (trustee_server_transactional_update_reboot_ok is sameas true)
+        or (trustee_server_transactional_update_reboot_ok is sameas false)
+    fail_msg: >-
+      trustee_server_transactional_update_reboot_ok must be null or a boolean,
+      got {{ trustee_server_transactional_update_reboot_ok | type_debug }}

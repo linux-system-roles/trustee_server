@@ -6,6 +6,14 @@
     state: present
     use: "{{ (__trustee_server_is_ostree | d(false)) |
           ternary('ansible.posix.rhel_rpm_ostree', omit) }}"
+  register: __trustee_server_trustee_package_result
+
+- name: Handle reboot for transactional update systems
+  ansible.builtin.include_tasks: transactional_reboot.yml
+  vars:
+    __trustee_server_tu_result: "{{ __trustee_server_trustee_package_result }}"
+    __trustee_server_tu_packages: "{{ __trustee_server_trustee_packages }}"
+  when: __trustee_server_is_transactional
 
 - name: Ensure quadlet install directory exists
   ansible.builtin.file:
@@ -18,6 +26,7 @@
     src: quadlet/
     dest: "{{ __trustee_server_quadlet_install_dir }}/"
     mode: "0644"
+  register: __trustee_server_quadlet_files
 
 - name: Ensure Trustee Server config directory exists
   ansible.builtin.file:
@@ -32,6 +41,7 @@
     mode: "0644"
     directory_mode: "0755"
   loop: [as, kbs, rvps]
+  register: __trustee_server_config_files
 
 - name: Generate certificates for all components
   ansible.builtin.shell: |
@@ -44,11 +54,13 @@
         -addext "extendedKeyUsage=serverAuth" \
         -addext "subjectAltName=DNS:$(hostname -f)" \
         -out {{ __trustee_server_config_dir }}/kbs/server.crt
+      echo generated
     fi
     # KBS authentication key pair
     if [ ! -f {{ __trustee_server_config_dir }}/kbs/auth.key ] || [ ! -f {{ __trustee_server_config_dir }}/kbs/auth.pub ]; then
       openssl genpkey -algorithm ed25519 -out {{ __trustee_server_config_dir }}/kbs/auth.key
       openssl pkey -in {{ __trustee_server_config_dir }}/kbs/auth.key -pubout -out {{ __trustee_server_config_dir }}/kbs/auth.pub
+      echo generated
     fi
     # Attestation Service token signer key pair
     if [ ! -f {{ __trustee_server_config_dir }}/as/token.key ] || [ ! -f {{ __trustee_server_config_dir }}/as/token.crt ]; then
@@ -57,9 +69,10 @@
         -out {{ __trustee_server_config_dir }}/as/token.crt -days 3550 \
         -subj "/CN=as-token-signer/O=Red Hat"
       mkdir -p {{ __trustee_server_config_dir }}/kbs/trusted_certs
-      cp {{ __trustee_server_config_dir }}/as/token.crt {{ __trustee_server_config_dir }}/kbs/trusted_certs/token0.crt
+      cp {{ __trustee_server_config_dir }}/as/token.crt {{ __trustee_server_config_dir }}/kbs/trusted_certs/token0.crt && echo generated
     fi
-  changed_when: true
+  register: __trustee_server_certificates
+  changed_when: "'generated' in __trustee_server_certificates.stdout_lines"
   no_log: "{{ trustee_server_secure_logging }}"
 
 - name: Allow port 8080 in firewall
@@ -82,8 +95,13 @@
   ansible.builtin.systemd:
     name: "{{ __trustee_server_pod_name.files[0].path | basename | replace('.pod', '-pod.service') }}"
     enabled: true
-    state: restarted
+    state: "{{ 'restarted'
+      if __trustee_server_quadlet_files is changed
+      or __trustee_server_config_files is changed
+      or __trustee_server_certificates is changed
+      else 'started' }}"
     daemon_reload: true
+  register: __trustee_server_pod_service
   when: __trustee_server_pod_name.files | length > 0
   failed_when: false
 
