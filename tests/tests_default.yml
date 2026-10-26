@@ -132,6 +132,22 @@
             name: "{{ (trustee_pod_files.files[0].path | basename) | replace('.pod', '') }}-pod"
             state: started
           check_mode: true
+
+        - name: Run the role again to check idempotency
+          ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+          vars:
+            __sr_public: true
+
+        - name: Assert the second run did not generate certificates or restart the pod
+          ansible.builtin.assert:
+            that:
+              - __trustee_server_certificates is not changed
+              - __trustee_server_pod_service is not changed
+              - __trustee_server_pod_service.status.ActiveState == 'active'
+            fail_msg: >-
+              The second run of the role generated certificates again,
+              changed the Trustee Server files, or had to start or
+              restart the pod
       always:
         - name: Run test cleanup
           ansible.builtin.include_tasks: tasks/cleanup.yml
