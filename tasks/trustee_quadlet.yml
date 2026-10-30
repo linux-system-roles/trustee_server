@@ -54,13 +54,13 @@
         -addext "extendedKeyUsage=serverAuth" \
         -addext "subjectAltName=DNS:$(hostname -f)" \
         -out {{ __trustee_server_config_dir }}/kbs/server.crt
-      echo generated
+      echo __GENERATE_SUCCESS__
     fi
     # KBS authentication key pair
     if [ ! -f {{ __trustee_server_config_dir }}/kbs/auth.key ] || [ ! -f {{ __trustee_server_config_dir }}/kbs/auth.pub ]; then
       openssl genpkey -algorithm ed25519 -out {{ __trustee_server_config_dir }}/kbs/auth.key
       openssl pkey -in {{ __trustee_server_config_dir }}/kbs/auth.key -pubout -out {{ __trustee_server_config_dir }}/kbs/auth.pub
-      echo generated
+      echo __GENERATE_SUCCESS__
     fi
     # Attestation Service token signer key pair
     if [ ! -f {{ __trustee_server_config_dir }}/as/token.key ] || [ ! -f {{ __trustee_server_config_dir }}/as/token.crt ]; then
@@ -69,10 +69,10 @@
         -out {{ __trustee_server_config_dir }}/as/token.crt -days 3550 \
         -subj "/CN=as-token-signer/O=Red Hat"
       mkdir -p {{ __trustee_server_config_dir }}/kbs/trusted_certs
-      cp {{ __trustee_server_config_dir }}/as/token.crt {{ __trustee_server_config_dir }}/kbs/trusted_certs/token0.crt && echo generated
+      cp {{ __trustee_server_config_dir }}/as/token.crt {{ __trustee_server_config_dir }}/kbs/trusted_certs/token0.crt && echo __GENERATE_SUCCESS__
     fi
   register: __trustee_server_certificates
-  changed_when: "'generated' in __trustee_server_certificates.stdout_lines"
+  changed_when: "'__GENERATE_SUCCESS__' in __trustee_server_certificates.stdout_lines"
   no_log: "{{ trustee_server_secure_logging }}"
 
 - name: Allow port 8080 in firewall
