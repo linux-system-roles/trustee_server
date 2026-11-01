@@ -151,6 +151,8 @@ id="toc-trustee_server_secret_registration_enabled">trustee_server_secret_regist
 id="toc-trustee_server_secret_registration_listen_port">trustee_server_secret_registration_listen_port</a></li>
 <li><a href="#trustee_server_secure_logging"
 id="toc-trustee_server_secure_logging">trustee_server_secure_logging</a></li>
+<li><a href="#trustee_server_transactional_update_reboot_ok"
+id="toc-trustee_server_transactional_update_reboot_ok">trustee_server_transactional_update_reboot_ok</a></li>
 </ul></li>
 <li><a href="#example-playbook" id="toc-example-playbook">Example
 Playbook</a></li>
@@ -231,6 +233,19 @@ from these tasks. However, be aware that this may expose sensitive
 information in logs, so it should only be used in development or
 troubleshooting scenarios.</p>
 <p>Default: <code>true</code></p>
+<p>Type: <code>bool</code></p>
+<h2
+id="trustee_server_transactional_update_reboot_ok">trustee_server_transactional_update_reboot_ok</h2>
+<p>This variable is used to handle reboots required by transactional
+updates. If a transactional update requires a reboot, the role will
+proceed with the reboot if
+<code>trustee_server_transactional_update_reboot_ok</code> is set to
+<code>true</code>. If set to <code>false</code>, the role will notify
+the user that a reboot is required, allowing for custom handling of the
+reboot requirement. If this variable is not set, the role will fail to
+ensure the reboot requirement is not overlooked. For non-transactional
+update systems, this variable is ignored.</p>
+<p>Default: <code>null</code></p>
 <p>Type: <code>bool</code></p>
 <h1 id="example-playbook">Example Playbook</h1>
 <div class="sourceCode" id="cb2"><pre
